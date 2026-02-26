@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ZipBrute": {
+      "commandName": "Project",
+      "commandLineArgs": "-f x.zip -l 3"
+    }
+  }
+}
