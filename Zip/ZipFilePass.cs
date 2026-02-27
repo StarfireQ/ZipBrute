@@ -1,15 +1,16 @@
-﻿using System;
+﻿using ICSharpCode.SharpZipLib.Zip;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
-using ICSharpCode.SharpZipLib.Zip;
 
 namespace ZipBrute.Zip
 {
     internal class ZipFilePass
     {
-        public static bool TryPass(byte[] zipBytes, string entryName, List<string> passDict, int threadsCount)
+        public static bool TryPass(byte[] zipBytes, string entryName, IEnumerable<string> passDict, int maxPassLenght, int threadsCount)
         {
             bool ret = false;
 
@@ -21,9 +22,10 @@ namespace ZipBrute.Zip
             };
 
             long processed = 0;
+            BigInteger total = CountUpToLength(maxPassLenght);
             Timer timer = new Timer(_ =>
             {
-                Console.WriteLine($"Processed: {Interlocked.Read(ref processed)} / {passDict.Count}");
+                Console.WriteLine($"Processed: {Interlocked.Read(ref processed)} / {total.ToString()}");
             }, null, 0, 1000);
 
             try
@@ -63,6 +65,16 @@ namespace ZipBrute.Zip
             }
 
             return ret;
+        }
+
+        static BigInteger CountUpToLength(int maxLength)
+        {
+            BigInteger sum = 0;
+
+            for (int i = 1; i <= maxLength; i++)
+                sum += BigInteger.Pow(95, i);
+
+            return sum;
         }
     }
 }

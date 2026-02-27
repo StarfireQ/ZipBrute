@@ -17,7 +17,7 @@ namespace ZipBrute.Worker
             byte[] zipBytes = File.ReadAllBytes(filePath);
 
             Console.WriteLine("Generating password dictionary...");
-            List<string> passDict = AsciiGen.GenerateAsciiCombinations(1, maxPassLenght).ToList();
+            IEnumerable<string> passDict = AsciiGen.GenerateAsciiCombinations(1, maxPassLenght);
 
             if (zipBytes != null && zipBytes.Length != 0)
             {
@@ -27,7 +27,7 @@ namespace ZipBrute.Worker
 
                 if (entry != null && (entry.IsEncrypted || entry.AESKeySize > 0))
                 {
-                    bool success = ZipFilePass.TryPass(zipBytes, entry.Name!, passDict, threadsCount);
+                    bool success = ZipFilePass.TryPass(zipBytes, entry.Name!, passDict, maxPassLenght, threadsCount);
                     string log = success ? "SUCCESS" : "FAIL";
                     sw.Stop();
 
